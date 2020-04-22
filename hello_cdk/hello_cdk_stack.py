@@ -1,23 +1,21 @@
-from aws_cdk import (
-    aws_iam as iam,
-    aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
-    core
-)
+from aws_cdk import (core,
+                     aws_lambda as _lambda,
+                     aws_apigateway as _apigw)
 
 class HelloCdkStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope, id, **kwargs):
         super().__init__(scope, id, **kwargs)
+        handler=_lambda.Function(self, 'Hello Lambda',
+                                 handler='lambda-handler.handler',
+                                 runtime=_lambda.Runtime.PYTHON_3_7,
+                                 code=_lambda.Code.asset('lambda'))
+        api=_apigw.LambdaRestApi(self, "Hello API Gateway",
+                                 handler=handler)
+        api.root.add_method("GET")
+        api.root.add_method("POST")
 
-        queue = sqs.Queue(
-            self, "HelloCdkQueue",
-            visibility_timeout=core.Duration.seconds(300),
-        )
+if __name__=="__main__":
+    pass
 
-        topic = sns.Topic(
-            self, "HelloCdkTopic"
-        )
-
-        topic.add_subscription(subs.SqsSubscription(queue))
+        
