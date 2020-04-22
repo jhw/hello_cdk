@@ -6,6 +6,6 @@ from hello_cdk.hello_cdk_stack import HelloCdkStack
 
 
 app = core.App()
-HelloCdkStack(app, "hello-cdk", env={'region': 'us-west-2'})
+HelloCdkStack(app, "hello-cdk", env={'region': 'eu-west-1'})
 
 app.synth()
